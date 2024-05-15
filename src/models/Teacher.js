@@ -3,14 +3,22 @@ const { Schema } = mongoose
 const { Types : { ObjectId }} = Schema
 const moment = require('moment')
 
-const userSchema = new Schema({
+const TeacherSchema = new Schema({
+    isTeacher : {
+        type : Boolean,
+        required: true
+    },
+    organization : {
+        type : String,
+        required : true
+    },
     name : {
         type : String,
         required : true
     },
     email : {
         type : String,
-        required : true
+        required : false
     },
     userId : {
         type : String,
@@ -21,15 +29,7 @@ const userSchema = new Schema({
         type : String,
         required : true
     },
-    isAdmin : {
-        type : Boolean,
-        default : false
-    },
     isDirector : {
-        type : Boolean,
-        default : false
-    },
-    isTeacher : {
         type : Boolean,
         default : false
     },
@@ -43,6 +43,6 @@ const userSchema = new Schema({
     }
 })
 
-const User = mongoose.model('User', userSchema)
+const Teacher = mongoose.model('Teacher', TeacherSchema)
 
-module.exports = User
+module.exports = Teacher
