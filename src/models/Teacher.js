@@ -20,6 +20,10 @@ const TeacherSchema = new Schema({
         type : String,
         required : false
     },
+    phone : {
+        type : String,
+        required : false
+    },
     userId : {
         type : String,
         required : true,
@@ -33,7 +37,7 @@ const TeacherSchema = new Schema({
         type : Boolean,
         default : false
     },
-    createAt : {
+    createdAt : {
         type : Date,
         default : moment()
     },

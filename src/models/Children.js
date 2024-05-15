@@ -25,7 +25,7 @@ const childrenSchema = new Schema({
             required : true
         }
     ],
-    createAt : {
+    createdAt : {
         type : Date,
         default: moment()
     },

@@ -39,7 +39,7 @@ const SchoolParentSchema = new Schema({
         type : Boolean,
         default : false
     },
-    createAt : {
+    createdAt : {
         type : Date,
         default : moment()
     },
