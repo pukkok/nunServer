@@ -1,15 +1,15 @@
 const express = require('express')
 const expressAsyncHandler = require('express-async-handler')
 const axios = require('axios')
+const config = require('../../config')
 
 const router = express.Router()
 
 const allData = require('../datas/allData')
 
 const BASE_URL = `https://e-childschoolinfo.moe.go.kr/api/notice/basicInfo2.do`
-// process.env['NODE_TLS_REJECT_UNAUTHORIZED'] = 0 // 인증서 유효성 검증안함
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // 인증서 유효성 검증안함
-const key = process.env.CHILDSCHOOL_OPENAPI_KEY
+const key = config.OPEN_API_KEY
 
 router.post('/kinder', expressAsyncHandler( async(req, res, next) => {
     const {sidoCode, sggCode, pageCnt, currentPage} = req.body
