@@ -5,8 +5,6 @@ const config = require('../../config')
 
 const router = express.Router()
 
-const allData = require('../datas/allData')
-
 const BASE_URL = `https://e-childschoolinfo.moe.go.kr/api/notice/basicInfo2.do`
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // 인증서 유효성 검증안함
 const key = config.OPEN_API_KEY
@@ -14,11 +12,6 @@ const key = config.OPEN_API_KEY
 router.post('/kinder', expressAsyncHandler( async(req, res, next) => {
     const {sidoCode, sggCode} = req.body
     let url = `${BASE_URL}?key=${key}&sidoCode=${sidoCode}&sggCode=${sggCode}`
-
-    if(Object.keys(req.query).length>0){ // 쿼리스트링이 존재할 때
-        const {page, cnt} = req.query
-        url = `${url}&currentPage=${page}&pageCnt=${cnt}`
-    }
 
     const { data } = await axios.get(url)
     if(data.kinderInfo){
