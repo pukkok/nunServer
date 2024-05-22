@@ -26,7 +26,6 @@ app.use(express.json()) // 파싱
 /************************************************************************************* */
 
 const kinder = require('./src/routes/kinder')
-
 app.use('/api', kinder)
 
 // 작동 테스트
