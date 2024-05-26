@@ -3,16 +3,15 @@ const { Schema } = mongoose
 const { Types : { ObjectId }} = Schema
 const dayjs = require('dayjs')
 
-const TeacherSchema = new Schema({
-
-    teacherInfo : { 
-        type : ObjectId,
-        ref: 'Certificate',
-        required: true
+const TesterSchema = new Schema({
+    name : {
+        type : String,
+        required : true
     },
-    // 필요한 정보(인증서 정보)
-    // isTeacher, organization, name, isDirector
-
+    organization: {
+        type : String,
+        default : '테스트유치원'
+    },
     email : {
         type : String,
         required : false
@@ -21,7 +20,6 @@ const TeacherSchema = new Schema({
         type : String,
         required : false
     },
-    
     userId : {
         type : String,
         required : true,
@@ -31,7 +29,10 @@ const TeacherSchema = new Schema({
         type : String,
         required : true
     },
-    
+    isDirector : {
+        type : Boolean,
+        default : false
+    },
     createdAt : {
         type : Date,
         default : dayjs()
@@ -42,6 +43,6 @@ const TeacherSchema = new Schema({
     }
 })
 
-const Teacher = mongoose.model('Teacher', TeacherSchema)
+const Tester = mongoose.model('Tester', TesterSchema)
 
-module.exports = Teacher
+module.exports = Tester

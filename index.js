@@ -6,9 +6,9 @@ const port = 5000
 // DB 연결
 const mongoose = require('mongoose')
 const config = require('./config')
-// mongoose.connect(config.MONGODB_URL) // 프로미스
-// .then(()=> console.log('데이터베이스 연결 성공'))
-// .catch(err => console.log(`데이터베이스 연결 실패 : ${err}`))
+mongoose.connect(config.MONGODB_URL) // 프로미스
+.then(()=> console.log('데이터베이스 연결 성공'))
+.catch(err => console.log(`데이터베이스 연결 실패 : ${err}`))
 
 /** 공통 미들웨어 설정 */ 
 
@@ -25,8 +25,11 @@ app.use(express.json()) // 파싱
 
 /************************************************************************************* */
 
-const kinder = require('./src/routes/kinder')
-app.use('/api', kinder)
+const childSchool = require('./src/routes/childSchool')
+app.use('/api', childSchool)
+
+const tester = require('./src/routes/testers')
+app.use('/tester', tester)
 
 // 작동 테스트
 app.get('/test', (req, res, next)=>{
