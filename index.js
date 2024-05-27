@@ -2,7 +2,6 @@ const express = require('express')
 const app = express()
 const port = 5000
 
-
 // DB 연결
 const mongoose = require('mongoose')
 const config = require('./config')
@@ -28,8 +27,8 @@ app.use(express.json()) // 파싱
 const childSchool = require('./src/routes/childSchool')
 app.use('/api', childSchool)
 
-const tester = require('./src/routes/testers')
-app.use('/tester', tester)
+const teacher = require('./src/routes/teachers')
+app.use('/teacher', teacher)
 
 // 작동 테스트
 app.get('/test', (req, res, next)=>{

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose
 
 const CertificateSchema = new Schema({ // 교육청 소속인지?
-    key : { //password
+    key : {
         type : String,
         required : true,
         unique: true,

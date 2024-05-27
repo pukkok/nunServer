@@ -5,13 +5,27 @@ const dayjs = require('dayjs')
 
 const TeacherSchema = new Schema({
 
-    teacherInfo : { 
-        type : ObjectId,
-        ref: 'Certificate',
+    name : {
+        type : String,
         required: true
     },
-    // 필요한 정보(인증서 정보)
-    // isTeacher, organization, name, isDirector
+    organization : { // 유치원 명
+        type : String,
+        required: true
+    },
+    organizationCode : { // 유치원 코드
+        type : String,
+        required: true
+    },
+    isDirector : {
+        type: Boolean,
+        required: true,
+    },
+
+    isAdmin : {
+        type: Boolean,
+        default: false
+    },
 
     email : {
         type : String,

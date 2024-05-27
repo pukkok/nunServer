@@ -28,19 +28,23 @@ const lastName = [
 ]
 
 const keys = [
-    'keyA', 'keyB', 'keyC', 'keyD'
+    'key1', 'key2', 'key3', 'key4', 'Key5',
+    'key6', 'key7', 'key8', 'key9', 'key10',
+    'key11', 'key12', 'key13', 'key14', 'key15'
 ]
 
 const passwords = [
-    'passwordA', 'passwordB', 'passwordC', 'passwordD'
+    'password1', 'password2', 'password3', 'password4', 'password5',
+    'password6', 'password7', 'password8', 'password9', 'password10',
+    'password11', 'password12', 'password13', 'password14', 'password15'
 ]
 
 const organization = [
     {name : '미르유치원', code : "1ecec08c-f192-b044-e053-0a32095ab044"},
-    {name : '한나유치원', code : "1ecec08c-eec6-b044-e053-0a32095ab044"}
+    {name : '한나유치원', code : "1ecec08c-eec6-b044-e053-0a32095ab044"},
+    {name : "대전갈마유치원", code : "1ecec08c-f56f-b044-e053-0a32095ab044"},
+    {name : "인천구월서초등학교병설유치원", code : "1ecec08c-f8ae-b044-e053-0a32095ab044"},
 ]
-
-const director = [true, false]
 
 mongoose.connect(config.MONGODB_URL)
 .then(()=> console.log('연결 완료'))
@@ -48,11 +52,18 @@ mongoose.connect(config.MONGODB_URL)
 
 const createCertificate = async (n, certificates) => {
     console.log('인증서 만드는 중')
-    for(let i=0; i<n; i++){
-        let director = false
-        let selectOrganization = organization[selectRN(organization.length)]
+    let used = []
 
-        if(i===0) director = true
+    for(let i=0; i<n; i++){
+        let director = true
+        let selectOrganization = organization[selectRN(organization.length)]
+        
+        if(used.includes(selectOrganization.code)){
+            director = false
+        }else{
+            used.push(selectOrganization.code)
+        }
+
         const certificate = new Certificate({
             key: keys[i],
             password: passwords[i],
@@ -67,11 +78,7 @@ const createCertificate = async (n, certificates) => {
 }
 
 const buildData = async (certificates) => {
-    certificates = await createCertificate(4, certificates)
+    certificates = await createCertificate(15, certificates)
 }
 
 buildData(certificates)
-
-// const password = [
-//     'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t'
-// ]
