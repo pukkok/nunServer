@@ -22,6 +22,9 @@ const certificate = expressAsyncHandler( async(req, res, next) => {
 router.post('/join/step1', certificate)
 
 router.post('/join/id-check', expressAsyncHandler( async(req, res, next) => {
+    if(req.body.userId === ''){
+        res.json({code: 400, msg: '아이디를 입력해주세요.'})
+    }
     const user = await Teacher.findOne({userId : req.body.userId})
     if(user){
         res.json({code: 401, msg: '이미 존재하는 아이디입니다.'})

@@ -7,7 +7,8 @@ const TeacherSchema = new Schema({
 
     name : {
         type : String,
-        required: true
+        required: true,
+        trim : true
     },
     organization : { // 유치원 명
         type : String,
