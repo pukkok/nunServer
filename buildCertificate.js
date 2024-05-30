@@ -69,7 +69,7 @@ const createCertificate = async (n, certificates) => {
             password: passwords[i],
             name : firstName[selectRN(firstName.length)] + lastName[selectRN(lastName.length)],
             organization : selectOrganization.name,
-            organizationCode : selectOrganization.code,
+            kinderCode : selectOrganization.code,
             isDirector: director,
         })
         certificates.push(await certificate.save())

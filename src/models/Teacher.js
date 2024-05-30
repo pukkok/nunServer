@@ -14,7 +14,7 @@ const TeacherSchema = new Schema({
         type : String,
         required: true
     },
-    organizationCode : { // 유치원 코드
+    kinderCode : { // 유치원 코드
         type : String,
         required: true
     },
@@ -30,11 +30,9 @@ const TeacherSchema = new Schema({
 
     email : {
         type : String,
-        required : false
     },
     phone : {
         type : String,
-        required : false
     },
     
     userId : {

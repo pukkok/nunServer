@@ -21,7 +21,7 @@ const logger = require('morgan')
 app.use(cors(corsOptions)) // cors 설정
 app.use(logger('tiny')) // 로그 설정
 app.use(express.json()) // 파싱
-
+app.use(express.static('public'))
 /************************************************************************************* */
 
 const childSchool = require('./src/routes/childSchool')
@@ -29,6 +29,9 @@ app.use('/api', childSchool)
 
 const teacher = require('./src/routes/teachers')
 app.use('/teacher', teacher)
+
+const uploader = require('./src/routes/uploader')
+app.use('/platform', uploader)
 
 // 작동 테스트
 app.get('/test', (req, res, next)=>{

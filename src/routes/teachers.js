@@ -12,8 +12,8 @@ const certificate = expressAsyncHandler( async(req, res, next) => {
     const certificate = await Certificate.findOne({ key : req.body.key, password: req.body.password })
 
     if(certificate){
-        const { name, organization, organizationCode, isDirector } = certificate
-        res.json({ code: 200, msg: '인증되었습니다.', data: {name, organization, organizationCode, isDirector}})
+        const { name, organization, kinderCode, isDirector } = certificate
+        res.json({ code: 200, msg: '인증되었습니다.', data: {name, organization, kinderCode, isDirector}})
     }else{
         res.json({ code: 404, msg: '인증서를 찾을수 없습니다.'})
     }

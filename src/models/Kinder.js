@@ -3,23 +3,31 @@ const { Schema } = mongoose
 const { ObjectId } = Schema
 
 const KinderSchema = new Schema({
-    organization : {
-        type: String,
-        required: true
-    },
     kinderCode : {
         type: String,
-        required: true
+        // required: true
     },
-    teacherList : [
-        {
-            type : ObjectId,
-            ref: 'Teacher'
-        }
-    ],
-    menuList : [
+    // teacherList : [
+    //     {
+    //         type : ObjectId,
+    //         ref: 'Teacher'
+    //     }
+    // ],
+    // menuList : [
         
-    ]
+    // ]
+
+    logoPath : {
+        type: String
+    },
+    bgPath : [{
+        type: String
+    }]
+
+
 })
 
+const Kinder = mongoose.model('kinder', KinderSchema)
+
+module.exports = Kinder
 // 소속된 강사인가?

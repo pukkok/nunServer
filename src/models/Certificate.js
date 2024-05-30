@@ -19,7 +19,7 @@ const CertificateSchema = new Schema({ // 교육청 소속인지?
         type : String,
         required: true
     },
-    organizationCode : { // 유치원 코드
+    kinderCode : { // 유치원 코드
         type : String,
         required: true
     },

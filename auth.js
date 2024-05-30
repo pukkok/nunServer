@@ -5,6 +5,7 @@ const generateToken = (user) => {
     return jwt.sign({ // 토큰 생성 페이로드
         _id: user._id,
         organization : user.organization,
+        kinderCode: user.kinderCode,
         name : user.name,
         userId : user.userId,
         createdAt: user.createdAt
