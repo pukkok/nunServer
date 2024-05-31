@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const moment = require('moment')
+const dayjs = require('dayjs')
 
 const childrenSchema = new Schema({
     organization : {
@@ -27,11 +27,11 @@ const childrenSchema = new Schema({
     ],
     createdAt : {
         type : Date,
-        default: moment()
+        default: dayjs()
     },
     lastModifiedAt : {
         type : Date,
-        default : moment()
+        default : dayjs()
     }
 })
 
