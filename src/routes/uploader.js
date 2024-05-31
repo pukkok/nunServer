@@ -6,6 +6,14 @@ const expressAsyncHandler = require('express-async-handler')
 
 const multer = require('multer')
 const path = require('path')
+const imgFilter = (req, file, cb) => {
+    const type = file.mimetype.split('/')[0]
+        if(type === 'image'){
+            cb(null, true)
+        }else{
+            cb(null, false)
+        }
+}
 const uploadLogo = multer({
     storage: multer.diskStorage({ //<- 저장소 지정
         destination: function( req, file, cb){ //경로
@@ -16,7 +24,8 @@ const uploadLogo = multer({
             const filename = path.basename(btoa(file.originalname),ext)+'_'+ Date.now() + ext
             cb(null, filename)
         }
-    })
+    }),
+    fileFilter: imgFilter
 })
 const uploadBg = multer({
     storage: multer.diskStorage({ //<- 저장소 지정
@@ -28,12 +37,18 @@ const uploadBg = multer({
             const filename = path.basename(btoa(file.originalname),ext)+'_'+ Date.now() + ext
             cb(null, filename)
         }
-    })
+    }),
+    fileFilter: imgFilter
 })
 // uploadLogo.fields([{name:'logoImg'},{name:'kinderCode'}])
 // array - 여러파일 single - 하나파일
 router.post('/upload/logo', uploadLogo.single('logoImg'), expressAsyncHandler( async (req,res,next)=>{
     console.log(req.file)// array req.files & single req.file
+
+    if(!req.file){ // 
+        return res.json({code: 400, msg: '잘못된 이미지 형식입니다.'})
+    }
+
     const kinder = await Kinder.findOne({kinderCode : req.body.kinderCode})
 
     if(kinder){

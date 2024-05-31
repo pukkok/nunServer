@@ -4,9 +4,8 @@ const Children = require('../models/Children')
 const expressAsyncHandler = require('express-async-handler')
 const Certificate = require('../models/Certificate')
 const { generateToken, isAuth } = require('../../auth')
-const { validationResult, oneOf } = require('express-validator')
-const { validateUserId, validateUserEmail, validateUserPassword } = require('../../validator')
-
+const { validationResult } = require('express-validator')
+const { validateUserId, validateUserEmail, validateUserPhone, validateUserPassword } = require('../../validator')
 
 const router = express.Router()
 
@@ -24,12 +23,13 @@ const certificate = expressAsyncHandler( async(req, res, next) => {
 
 router.post('/join/step1', certificate)
 
+// 아이디 중복확인 처리
 router.post('/join/id-check', validateUserId(), expressAsyncHandler( async(req, res, next) => {
     const errs = validationResult(req)
     if(!errs.isEmpty()){
         res.json({
             code: 400,
-            msg: '유효하지 않은 아이디입니다.',
+            msg: errs.array()[0].msg,
             err: errs.array()
         })
     }else{
@@ -40,7 +40,6 @@ router.post('/join/id-check', validateUserId(), expressAsyncHandler( async(req, 
             res.json({code: 200, msg: '사용 가능한 아이디입니다.'})
         }
     }
-
 }))
 
 // 교사 회원가입
@@ -49,11 +48,19 @@ router.post('/join/step2', [
     validateUserPassword()
 ],
 expressAsyncHandler( async(req, res, next) => {
+    if(req.body.phone) validateUserPhone()
+    next()
+}),
+expressAsyncHandler( async(req, res, next) => {
+    if(req.body.email) validateUserEmail()
+    next()
+}),
+expressAsyncHandler( async(req, res, next) => {
     const errs = validationResult(req)
     if(!errs.isEmpty()){
-        res.json({
+        return res.json({
             code: 400,
-            msg: '유효하지 않은 데이터입니다.',
+            msg: errs.array()[0].msg,
             err: errs.array()
         })
     }else{
@@ -64,22 +71,20 @@ expressAsyncHandler( async(req, res, next) => {
         if(isDirector){ // 원장이라면 권한 바로 주기
             isAdmin = true
         }
-
+    
         const teacher = new Teacher({
             name, isDirector, organization, kinderCode,
             email, phone, userId, password, confirmPassword, isAdmin
         })
-
+    
         const success = await teacher.save()
         if(success){
             res.json({code: 200, msg: '회원가입 완료'})
         }else{
             res.json({code: 401, msg: '회원가입 실패'})
         }
-        
+            
     }
-
-    
 
 }))
 
