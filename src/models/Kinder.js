@@ -16,6 +16,9 @@ const KinderSchema = new Schema({
     // menuList : [
         
     // ]
+    data: {
+        type: Object
+    },
 
     logoPath : {
         type: String

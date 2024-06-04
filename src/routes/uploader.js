@@ -95,6 +95,26 @@ router.post('/upload/bg', uploadBg.array('bgImgs'), expressAsyncHandler( async(r
 
 module.exports = router
 
+router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
+    const kinder = await Kinder.findOne({kinderCode : req.body.kinderCode})
+    const {logoWidth, logoHeight, containerSize} = req.body
+    if(kinder){
+        kinder.data = {...kinder.data, logoWidth : logoWidth || kinder.data.logoHeight, logoHeight, containerSize}
+
+        for(let prop in req.body){
+            if(prop)
+            kinder.data[prop] = req.body[prop]
+        }
+
+        const result = await kinder.save()
+        if(result){
+            res.json({code: 200, msg: '저장완료', result})
+        }
+    }else{
+        res.json({code:400, msg: '유치원 코드가 일치하지 않습니다.'})
+    }
+}))
+
 // const result = await Promise.allSettled(req.files.map((file)=>{
 //     const image = new Image({
 //         path: file.path.slice(7, file.path.length)
