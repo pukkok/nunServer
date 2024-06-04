@@ -22,6 +22,7 @@ app.use(cors(corsOptions)) // cors 설정
 app.use(logger('tiny')) // 로그 설정
 app.use(express.json()) // 파싱
 app.use(express.static('public'))
+const { isAuth, isAdmin } = require('./auth')
 /************************************************************************************* */
 
 const childSchool = require('./src/routes/childSchool')
@@ -31,7 +32,8 @@ const teacher = require('./src/routes/teachers')
 app.use('/teacher', teacher)
 
 const uploader = require('./src/routes/uploader')
-app.use('/platform', uploader)
+const expressAsyncHandler = require('express-async-handler')
+app.use('/platform', isAuth, isAdmin, uploader)
 
 // 작동 테스트
 app.get('/test', (req, res, next)=>{

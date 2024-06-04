@@ -1,31 +1,24 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
-const { ObjectId } = Schema
 
 const KinderSchema = new Schema({
     kinderCode : {
         type: String,
-        // required: true
+        required: true,
+        unique: true
     },
-    // teacherList : [
-    //     {
-    //         type : ObjectId,
-    //         ref: 'Teacher'
-    //     }
-    // ],
-    // menuList : [
-        
-    // ]
     data: {
         type: Object
     },
-
     logoPath : {
         type: String
     },
-    bgPath : [{
+    bgPath : {
         type: String
-    }]
+    },
+    addBgList: [
+        { type: String }
+    ]
 
 
 })

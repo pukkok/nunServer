@@ -8,7 +8,8 @@ const generateToken = (user) => {
         kinderCode: user.kinderCode,
         name : user.name,
         userId : user.userId,
-        createdAt: user.createdAt
+        createdAt: user.createdAt,
+        isAdmin : user.isAdmin
     },
     config.JWT_SECRET, // 비밀키
     {
@@ -36,7 +37,17 @@ const isAuth = (req, res, next) => {
     }
 }
 
+const isAdmin = (req, res, next) => {
+    if(req.user && req.user.isAdmin){
+        next()
+    }else{
+        return res.status(401)
+        .json({ code: 401, msg: '당신은 관리자가 아니었습니다!'})
+    }
+}
+
 module.exports = {
     generateToken,
     isAuth,
+    isAdmin
 }

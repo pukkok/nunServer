@@ -4,6 +4,27 @@ const router = express.Router()
 const Kinder = require('../models/Kinder')
 const expressAsyncHandler = require('express-async-handler')
 
+router.post('/newpage', expressAsyncHandler( async(req, res, next) =>{
+    console.log('들어옴')
+    const oldKinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
+
+    if(oldKinder){
+        return res.json({code: 400, msg: '이미 존재하는 페이지입니다.'})
+    }
+
+    const newKinder = await new Kinder({
+        kinderCode : req.user.kinderCode
+    })
+    
+    if(newKinder){
+        newKinder.save()
+        res.json({code: 200, msg: '새로운 페이지가 생성되었습니다.'})
+    }else{
+        res.json({code:400, msg: '페이지 생성에 실패하였습니다.'})
+    }
+}))
+
+// 이미지 멀터
 const multer = require('multer')
 const path = require('path')
 const imgFilter = (req, file, cb) => {
@@ -44,82 +65,62 @@ const uploadBg = multer({
 // array - 여러파일 single - 하나파일
 router.post('/upload/logo', uploadLogo.single('logoImg'), expressAsyncHandler( async (req,res,next)=>{
     console.log(req.file)// array req.files & single req.file
-
+    
     if(!req.file){ // 
         return res.json({code: 400, msg: '잘못된 이미지 형식입니다.'})
     }
 
-    const kinder = await Kinder.findOne({kinderCode : req.body.kinderCode})
+    const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
 
     if(kinder){
         await kinder.updateOne({
             logoPath: req.file.path.slice(7, req.file.path.length)
         })
         await kinder.save()
-        res.json({code: 200, msg: '수정이 완료되었습니다.'})
+        res.json({code: 200, msg: '로고 수정이 완료되었습니다.'})
     }else{
-        const image = await new Kinder({
-            logoPath: req.file.path.slice(7, req.file.path.length)
-        })
-        const newImage = await image.save()
-        res.json({code:200 , newImage})
+        res.json({code:400 , msg: '잘못된 접근입니다.'})
     }
 
 }))
 
-router.post('/upload/bg', uploadBg.array('bgImgs'), expressAsyncHandler( async(req, res, next) => {
-    const kinder = await Kinder.findOne({kinderCode : req.body.kinderCode})
+router.post('/upload/bg-list', uploadBg.array('bgImgs'), expressAsyncHandler( async(req, res, next) => {
+
+    const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
     const imgs = req.files.map(file=>{
         return file.path.slice(7, file.path.length)
     })
 
     if(kinder){
         await kinder.updateOne({
-            bgPath: imgs
+            addBgList: imgs
         })
         const result = await kinder.save()
-        res.json({code: 200, msg: '수정이 완료되었습니다.', result})
+        res.json({code: 200, msg: '새로운 배경 테마 이미지가 추가되었습니다.', result})
     }else{
-        const result = await Promise.allSettled(req.files.map((file)=>{
-            const image = new Kinder({
-                bgPath: file.path.slice(7, file.path.length)
-            })
-            const newImage = image.save()
-            return newImage
-        }))
-        if(result){
-            res.json({code: 200, msg: '추가완료', result })
-        }
+        res.json({code: 400, msg: '잘못된 접근입니다.' })
     }
 }))
 
 module.exports = router
 
 router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
-    const kinder = await Kinder.findOne({kinderCode : req.body.kinderCode})
-    const {logoWidth, logoHeight, containerSize} = req.body
-    if(kinder){
-        kinder.data = {...kinder.data, logoWidth : logoWidth || kinder.data.logoHeight, logoHeight, containerSize}
+    const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
+    const {logoWidth, logoHeight, containerSize, containerUnit} = req.body
 
-        for(let prop in req.body){
-            if(prop)
-            kinder.data[prop] = req.body[prop]
+    if(kinder){
+        kinder.data = {...kinder.data, 
+            logoWidth : logoWidth || kinder.data.logoWidth,
+            logoHeight : logoHeight || kinder.data.logoHeight, 
+            containerSize : containerSize || kinder.data.containerSize,
+            containerUnit : containerUnit || kinder.data.containerUnit
         }
 
         const result = await kinder.save()
         if(result){
-            res.json({code: 200, msg: '저장완료', result})
+            res.json({code: 200, msg: '페이지 데이터 저장완료', result})
         }
     }else{
         res.json({code:400, msg: '유치원 코드가 일치하지 않습니다.'})
     }
 }))
-
-// const result = await Promise.allSettled(req.files.map((file)=>{
-//     const image = new Image({
-//         path: file.path.slice(7, file.path.length)
-//     })
-//     const newImage = image.save()
-//     return newImage
-// }))
-// res.json({code:200 , result})
