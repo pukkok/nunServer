@@ -35,7 +35,7 @@ const SchoolParentSchema = new Schema({
         type : String,
         required : true
     },
-    isAdmin : {
+    isKinderAdmin : {
         type : Boolean,
         default : false
     },

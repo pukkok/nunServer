@@ -1,19 +1,25 @@
-/* 서버 */
 const express = require('express')
 const router = express.Router()
 const Kinder = require('../models/Kinder')
 const expressAsyncHandler = require('express-async-handler')
 
 router.post('/newpage', expressAsyncHandler( async(req, res, next) =>{
-    console.log('들어옴')
     const oldKinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
 
     if(oldKinder){
-        return res.json({code: 400, msg: '이미 존재하는 페이지입니다.'})
+        return res.json({code: 400, msg: '이미 생성된 페이지입니다.'})
     }
 
+    let urlMaker = req.user.organization.split('유치원')[0]
+    + req.user.kinderCode.split('-')[4]
+
     const newKinder = await new Kinder({
-        kinderCode : req.user.kinderCode
+        kinderCode : req.user.kinderCode,
+        originUrl: urlMaker,
+        data: {
+            logoPath:'', logoWidth:'', logoHeight:'',
+            addBgList:[], containerSize:'', containerUnit:'', selectBgSrc:''
+        }
     })
     
     if(newKinder){
@@ -64,7 +70,7 @@ const uploadBg = multer({
 // uploadLogo.fields([{name:'logoImg'},{name:'kinderCode'}])
 // array - 여러파일 single - 하나파일
 router.post('/upload/logo', uploadLogo.single('logoImg'), expressAsyncHandler( async (req,res,next)=>{
-    console.log(req.file)// array req.files & single req.file
+    // console.log(req.file)// array req.files & single req.file
     
     if(!req.file){ // 
         return res.json({code: 400, msg: '잘못된 이미지 형식입니다.'})
@@ -74,12 +80,12 @@ router.post('/upload/logo', uploadLogo.single('logoImg'), expressAsyncHandler( a
 
     if(kinder){
         await kinder.updateOne({
-            logoPath: req.file.path.slice(7, req.file.path.length)
+            data: {...kinder.data, logoPath: req.file.path.slice(7, req.file.path.length)}
         })
         await kinder.save()
-        res.json({code: 200, msg: '로고 수정이 완료되었습니다.'})
+        res.json({code: 200, msg: '로고 정보가 저장되었습니다.'})
     }else{
-        res.json({code:400 , msg: '잘못된 접근입니다.'})
+        res.json({code: 400 , msg: '잘못된 접근입니다.'})
     }
 
 }))
@@ -92,11 +98,15 @@ router.post('/upload/bg-list', uploadBg.array('bgImgs'), expressAsyncHandler( as
     })
 
     if(kinder){
-        await kinder.updateOne({
-            addBgList: imgs
-        })
-        const result = await kinder.save()
-        res.json({code: 200, msg: '새로운 배경 테마 이미지가 추가되었습니다.', result})
+        if(imgs){
+            
+            kinder.data = {...kinder.data, addBgList: [...kinder.data.addBgList, ...imgs]}
+            
+            const result = await kinder.save()
+            res.json({code: 200, msg: '새로운 배경 테마 이미지가 추가되었습니다.', result})
+        }else{
+            res.json({code: 400, msg: '잘못된 이미지 추가입니다.'})
+        }
     }else{
         res.json({code: 400, msg: '잘못된 접근입니다.' })
     }
@@ -104,16 +114,24 @@ router.post('/upload/bg-list', uploadBg.array('bgImgs'), expressAsyncHandler( as
 
 module.exports = router
 
+// 데이터 업로드하기
 router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
     const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
-    const {logoWidth, logoHeight, containerSize, containerUnit} = req.body
+    const {logoWidth, logoHeight, containerSize, containerUnit, selectBgSrc, navMainList, navSubList} = req.body
+
+    let newSelectBgSrc = ''
+    if(selectBgSrc && selectBgSrc.includes('blob:')) newSelectBgSrc = selectBgSrc.replace('blob:', '')
 
     if(kinder){
         kinder.data = {...kinder.data, 
             logoWidth : logoWidth || kinder.data.logoWidth,
             logoHeight : logoHeight || kinder.data.logoHeight, 
+            navDepth1 : [...navMainList],
+            navDepth2 : {...navSubList},
             containerSize : containerSize || kinder.data.containerSize,
-            containerUnit : containerUnit || kinder.data.containerUnit
+            containerUnit : containerUnit || kinder.data.containerUnit,
+            selectBgSrc : newSelectBgSrc || kinder.data.selectBgSrc
+            
         }
 
         const result = await kinder.save()
@@ -123,4 +141,22 @@ router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
     }else{
         res.json({code:400, msg: '유치원 코드가 일치하지 않습니다.'})
     }
+}))
+
+// 데이터 게시 시작
+router.post('/startpage', expressAsyncHandler( async(req, res, next)=> {
+    const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
+
+    if(kinder){
+        kinder.openPage = true
+        const result = await kinder.save()
+        if(result){
+            res.json({code: 200, msg: '홈페이지 게시가 완료되었습니다.'})
+        }else{
+            res.json({code: 400, msg: '잘못된 접근입니다.'})
+        }
+    }else{
+        res.json({code: 400, msg: '잘못된 접근입니다.'})
+    }
+
 }))

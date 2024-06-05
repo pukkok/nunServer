@@ -35,6 +35,13 @@ const uploader = require('./src/routes/uploader')
 const expressAsyncHandler = require('express-async-handler')
 app.use('/platform', isAuth, isAdmin, uploader)
 
+const downloader = require('./src/routes/downloader')
+app.use('/kinder', isAuth, isAdmin, downloader)
+
+const kinder = require('./src/routes/kinder')
+app.use('/user', kinder)
+
+
 // 작동 테스트
 app.get('/test', (req, res, next)=>{
     res.json({code: 200, msg : '작동 확인'})

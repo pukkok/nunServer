@@ -7,18 +7,16 @@ const KinderSchema = new Schema({
         required: true,
         unique: true
     },
+    originUrl : {
+        type: String,
+    },
     data: {
         type: Object
     },
-    logoPath : {
-        type: String
-    },
-    bgPath : {
-        type: String
-    },
-    addBgList: [
-        { type: String }
-    ]
+    openPage : {
+        type: Boolean,
+        default: false
+    }
 
 
 })
@@ -26,4 +24,3 @@ const KinderSchema = new Schema({
 const Kinder = mongoose.model('kinder', KinderSchema)
 
 module.exports = Kinder
-// 소속된 강사인가?
