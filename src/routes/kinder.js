@@ -10,7 +10,7 @@ router.post('/kinderUrl', isAuth, expressAsyncHandler( async(req, res, next) => 
     if(findUrl){
         res.json({code: 200, msg: 'url 있음', url : findUrl.originUrl})
     }else{
-        res.json({code: 404, msg: 'url 없음'})
+        res.json({code: 419, msg: 'url 없음'})
     }
 }))
 

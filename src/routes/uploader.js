@@ -3,19 +3,23 @@ const router = express.Router()
 const Kinder = require('../models/Kinder')
 const expressAsyncHandler = require('express-async-handler')
 
+// URL 생성하기
 router.post('/newpage', expressAsyncHandler( async(req, res, next) =>{
     const oldKinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
 
     if(oldKinder){
-        return res.json({code: 400, msg: '이미 생성된 페이지입니다.'})
+        return res.json({code: 400, msg: '이미 URL이 생성된 유치원입니다.'})
     }
 
-    let urlMaker = req.user.organization.split('유치원')[0]
-    + req.user.kinderCode.split('-')[4]
+    const oldUrl = await Kinder.findOne({originUrl : req.body.createdUrl})
+
+    if(oldUrl){
+        return res.json({code: 400, msg: '이미 사용중인 URL입니다.'})
+    }
 
     const newKinder = await new Kinder({
         kinderCode : req.user.kinderCode,
-        originUrl: urlMaker,
+        originUrl: req.body.createdUrl,
         data: {
             logoPath:'', logoWidth:'', logoHeight:'',
             addBgList:[], containerSize:'', containerUnit:'', selectBgSrc:''
@@ -26,7 +30,7 @@ router.post('/newpage', expressAsyncHandler( async(req, res, next) =>{
         newKinder.save()
         res.json({code: 200, msg: '새로운 페이지가 생성되었습니다.'})
     }else{
-        res.json({code:400, msg: '페이지 생성에 실패하였습니다.'})
+        res.json({code: 400, msg: '페이지 생성에 실패하였습니다.'})
     }
 }))
 
@@ -126,8 +130,8 @@ router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
         kinder.data = {...kinder.data, 
             logoWidth : logoWidth || kinder.data.logoWidth,
             logoHeight : logoHeight || kinder.data.logoHeight, 
-            navDepth1 : [...navMainList],
-            navDepth2 : {...navSubList},
+            navDepth1 : navMainList && [...navMainList],
+            navDepth2 : navSubList && {...navSubList},
             containerSize : containerSize || kinder.data.containerSize,
             containerUnit : containerUnit || kinder.data.containerUnit,
             selectBgSrc : newSelectBgSrc || kinder.data.selectBgSrc
