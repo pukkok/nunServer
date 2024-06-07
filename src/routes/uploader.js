@@ -87,7 +87,7 @@ router.post('/upload/logo', uploadLogo.single('logoImg'), expressAsyncHandler( a
             data: {...kinder.data, logoPath: req.file.path.slice(7, req.file.path.length)}
         })
         await kinder.save()
-        res.json({code: 200, msg: '로고 정보가 저장되었습니다.'})
+        res.json({code: 200, msg: '로고 이미지가 저장되었습니다.'})
     }else{
         res.json({code: 400 , msg: '잘못된 접근입니다.'})
     }
@@ -121,7 +121,9 @@ module.exports = router
 // 데이터 업로드하기
 router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
     const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
-    const {logoWidth, logoHeight, containerSize, containerUnit, selectBgSrc, navMainList, navSubList} = req.body
+    const {
+        logoWidth, logoHeight, containerSize, containerUnit, selectBgSrc, 
+        navMainList, navSubList, zoneData, gridCoord} = req.body
 
     let newSelectBgSrc = selectBgSrc
     if(selectBgSrc && selectBgSrc.includes('blob:')) newSelectBgSrc = selectBgSrc.replace('blob:', '')
@@ -130,11 +132,14 @@ router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
         kinder.data = {...kinder.data, 
             logoWidth : logoWidth || kinder.data.logoWidth,
             logoHeight : logoHeight || kinder.data.logoHeight, 
-            navDepth1 : navMainList && [...navMainList],
-            navDepth2 : navSubList && {...navSubList},
+            navDepth1 : navMainList && [...navMainList] || kinder.data.navDepth1,
+            navDepth2 : navSubList && {...navSubList} || kinder.data.navDepth2,
             containerSize : containerSize || kinder.data.containerSize,
             containerUnit : containerUnit || kinder.data.containerUnit,
-            selectBgSrc : newSelectBgSrc || kinder.data.selectBgSrc
+            selectBgSrc : newSelectBgSrc || kinder.data.selectBgSrc,
+            zoneData: zoneData && {...zoneData} || kinder.data.zoneData,
+            gridCoord : gridCoord && {...gridCoord} || kinder.data.gridCoord
+
             
         }
 

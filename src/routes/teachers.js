@@ -96,7 +96,7 @@ expressAsyncHandler( async(req, res, next) => {
     })
 
     if(!loginTeacher){
-        res.status(401).json({ code: 401, msg: '아이디나 비밀번호를 확인해주세요'})
+        res.json({ code: 401, msg: '아이디나 비밀번호를 확인해주세요'})
     }else{
         const { name, email, userId, organization, isAdmin, createdAt } = loginTeacher
         res.json({
