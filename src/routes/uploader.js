@@ -123,7 +123,7 @@ router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
     const kinder = await Kinder.findOne({kinderCode : req.user.kinderCode})
     const {logoWidth, logoHeight, containerSize, containerUnit, selectBgSrc, navMainList, navSubList} = req.body
 
-    let newSelectBgSrc = ''
+    let newSelectBgSrc = selectBgSrc
     if(selectBgSrc && selectBgSrc.includes('blob:')) newSelectBgSrc = selectBgSrc.replace('blob:', '')
 
     if(kinder){

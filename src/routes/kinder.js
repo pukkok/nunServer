@@ -14,6 +14,18 @@ router.post('/kinderUrl', isAuth, expressAsyncHandler( async(req, res, next) => 
     }
 }))
 
+router.get('/openKinder/:kinderCode', expressAsyncHandler ( async(req, res, next) => {
+    const result = await Kinder.findOne({kinderCode : req.params.kinderCode, openPage: true})
+
+    if(result){
+        const url = result.originUrl
+        res.json({code: 200, msg: '게시된 페이지', url})
+    }else{
+        res.json({code: 404, msg: '찾을 수 없음'})
+    }
+
+}))
+
 router.get('/kinderData/:url', expressAsyncHandler( async(req, res, next) => {
     console.log(req.params)
     const result = await Kinder.findOne({originUrl: req.params.url})
