@@ -1,9 +1,11 @@
 const exress = require('express')
 const expressAsyncHandler = require('express-async-handler')
 
-const allergies = require('../datas/allergies')
-
 const router = exress.Router()
+
+router.post('/yoil', expressAsyncHandler( async(req, res, next) => {
+    
+}))
 
 router.post('/allergy', expressAsyncHandler( async(req, res, next) =>{
 

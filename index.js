@@ -32,7 +32,6 @@ const teacher = require('./src/routes/teachers')
 app.use('/teacher', teacher)
 
 const uploader = require('./src/routes/uploader')
-const expressAsyncHandler = require('express-async-handler')
 app.use('/platform', isAuth, isAdmin, uploader)
 
 const downloader = require('./src/routes/downloader')

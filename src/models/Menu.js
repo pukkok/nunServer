@@ -4,9 +4,24 @@ const { Types : {ObjectId} } = Schema
 const dayjs = require('dayjs')
 
 const MenuSchema = new Schema({
-    sideOptions : [
-        {type : ObjectId, ref: 'SideOption'}
-    ],
+    kinderCode: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    deleteYOIL : {
+        type: Array
+    },
+
+    sideOptions : {
+        type: Array
+    },
+
+    addAllergyList : {
+        type: Array
+    },
+    
     createdAt : {
         type: Date,
         default : dayjs()
@@ -15,12 +30,13 @@ const MenuSchema = new Schema({
         type: Date,
         default : dayjs()
     }
+    
 })
 
-const SideOptionSchema = new Schema({
+const SideOptionSchema = new Schema({ // 오늘의 한상, 단백질, 간식
     userId : {
         type : ObjectId,
-        ref: 'Tester'
+        ref: 'Teacher'
     },
     optionName : {
         type: String,
@@ -37,7 +53,7 @@ const SideOptionSchema = new Schema({
     }
 })
 
-const SubOptionSchema = new Schema({
+const SubOptionSchema = new Schema({ // 알레르기 입력
     userId : {
         type : ObjectId,
         ref: 'Teacher'

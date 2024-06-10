@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const { Schema } = mongoose
+const { ObjectId } = Schema
 
 const KinderSchema = new Schema({
     kinderCode : {
@@ -16,8 +17,11 @@ const KinderSchema = new Schema({
     openPage : {
         type: Boolean,
         default: false
+    },
+    menu: {
+        type: ObjectId,
+        ref: 'Menu'
     }
-
 
 })
 

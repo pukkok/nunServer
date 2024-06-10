@@ -27,17 +27,18 @@ router.get('/openKinder/:kinderCode', expressAsyncHandler ( async(req, res, next
 }))
 
 router.get('/kinderData/:url', expressAsyncHandler( async(req, res, next) => {
-    console.log(req.params)
     const result = await Kinder.findOne({originUrl: req.params.url})
-    if(result.openPage){
-        if(result){
+
+    if(result){
+        if(result.openPage){
             res.json({code: 200, msg: '데이터 전송 성공', result})
         }else{
-            res.json({code: 400, msg: '데이터 전송 실패'})
+            res.json({code: 400, msg: '페이지 게시 전입니다.'})
         }
     }else{
-        res.json({code: 400, msg: '페이지 게시 전입니다.'})
+        res.json({code: 400, msg: '페이지가 존재하지 않습니다.'})
     }
+
 }))
 
 module.exports = router

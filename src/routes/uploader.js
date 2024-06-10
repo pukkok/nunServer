@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Kinder = require('../models/Kinder')
+const { Menu } = require('../models/Menu')
 const expressAsyncHandler = require('express-async-handler')
 
 // URL 생성하기
@@ -22,7 +23,7 @@ router.post('/newpage', expressAsyncHandler( async(req, res, next) =>{
         originUrl: req.body.createdUrl,
         data: {
             logoPath:'', logoWidth:'', logoHeight:'',
-            addBgList:[], containerSize:'', containerUnit:'', selectBgSrc:''
+            addBgList:[], containerSize:'1240', containerUnit:'px', selectBgSrc:''
         }
     })
     
@@ -140,7 +141,6 @@ router.post('/upload/data', expressAsyncHandler( async(req, res, next) => {
             zoneData: zoneData && {...zoneData} || kinder.data.zoneData,
             gridCoord : gridCoord && {...gridCoord} || kinder.data.gridCoord
 
-            
         }
 
         const result = await kinder.save()
@@ -168,4 +168,61 @@ router.post('/startpage', expressAsyncHandler( async(req, res, next)=> {
         res.json({code: 400, msg: '잘못된 접근입니다.'})
     }
 
+}))
+
+
+// 식단표 파트
+// 지우고싶은 요일 넣기
+router.post('/menu/yoil', expressAsyncHandler( async(req, res, next) => {
+    const menu = await Menu.findOne({kinderCode : req.user.kinderCode })
+
+    if(menu){
+        menu.deleteYOIL = [...req.body.deleteYOIL]
+    
+        const result = await menu.save()
+        if(result){
+            res.json({code: 200, msg: '저장되었습니다.'})
+        }else{
+            res.json({code: 400, msg: '저장에 실패하였습니다.'})
+        }
+
+    }else{
+        const newMenu = await new Menu({
+            kinderCode : req.user.kinderCode,
+            deleteYOIL : [...req.body.deleteYOIL]
+        })
+        const result = await newMenu.save()
+        if(result){
+            res.json({code : 200, msg : '저장되었습니다.'})
+        }else{
+            res.json({code: 400, msg: '저장에 실패하였습니다.'})
+        }
+    }
+}))
+
+router.post('/menu/side-options', expressAsyncHandler( async(req, res, next) => {
+    const menu = await Menu.findOne({kinderCode : req.user.kinderCode })
+
+    if(menu){
+        menu.sideOptions = [...req.body.sideOptions]
+    
+        const result = await menu.save()
+        if(result){
+            res.json({code: 200, msg: '저장되었습니다.'})
+        }else{
+            res.json({code: 400, msg: '저장에 실패하였습니다.'})
+        }
+
+    }else{
+        const newMenu = await new Menu({
+            kinderCode : req.user.kinderCode,
+            sideOptions : [...req.body.sideOptions]
+        })
+        const result = await newMenu.save()
+        if(result){
+            res.json({code : 200, msg : '저장되었습니다.'})
+        }else{
+            res.json({code: 400, msg: '저장에 실패하였습니다.'})
+        }
+    }
 }))
