@@ -49,7 +49,7 @@ const imgFilter = (req, file, cb) => {
 const uploadLogo = multer({
     storage: multer.diskStorage({ //<- 저장소 지정
         destination: function( req, file, cb){ //경로
-            cb(null,`${origin}/uploads/logo`)
+            cb(null,`uploads/logo`)
         },
         filename: function(req, file, cb){ // 파일이름
             const ext = path.extname(file.originalname)
