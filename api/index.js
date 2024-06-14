@@ -42,7 +42,7 @@ app.use('/user', kinder)
 
 
 // 작동 테스트
-app.get('/test', (req, res, next)=>{
+app.get('/', (req, res, next)=>{
     res.json({code: 200, msg : '작동 확인'})
 })
 
