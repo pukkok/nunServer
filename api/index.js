@@ -16,6 +16,7 @@ const corsOptions = {
     origin: '*',
     credentials: true // 사용자 인증이 필요한 리소스를 요청할 수 있음
 }
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // 인증서 유효성 검증안함
 const logger = require('morgan')
 
 app.use(cors(corsOptions)) // cors 설정

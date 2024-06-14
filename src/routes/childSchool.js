@@ -7,7 +7,7 @@ const router = express.Router()
 
 const BASE_URL = config.CHILDSCHOOL_BASE_URL
 const key = config.CHILDSCHOOL_API_KEY
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0 // 인증서 유효성 검증안함
+
 
 router.post('/kinder', expressAsyncHandler( async(req, res, next) => {
     const {sidoCode, sggCode} = req.body
