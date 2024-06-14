@@ -22,7 +22,8 @@ const logger = require('morgan')
 app.use(cors(corsOptions)) // cors 설정
 app.use(logger('tiny')) // 로그 설정
 app.use(express.json()) // 파싱
-app.use(express.static('public'))
+// app.use(express.static('public'))
+app.use(express.static('uploads'))
 const { isAuth, isAdmin } = require('../auth')
 /************************************************************************************* */
 
