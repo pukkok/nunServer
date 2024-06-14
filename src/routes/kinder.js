@@ -36,7 +36,7 @@ router.get('/kinderData/:url', expressAsyncHandler( async(req, res, next) => {
             res.json({code: 400, msg: '페이지 게시 전입니다.'})
         }
     }else{
-        res.json({code: 400, msg: '페이지가 존재하지 않습니다.'})
+        res.json({code: 404, msg: '페이지가 존재하지 않습니다.'})
     }
 
 }))
