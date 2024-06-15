@@ -27,7 +27,7 @@ router.post('/join/step1', certificate)
 router.post('/join/id-check', validateUserId(), expressAsyncHandler( async(req, res, next) => {
     const errs = validationResult(req)
     if(!errs.isEmpty()){
-        res.json({
+        res.status(400).json({
             code: 400,
             msg: errs.array()[0].msg,
             err: errs.array()
